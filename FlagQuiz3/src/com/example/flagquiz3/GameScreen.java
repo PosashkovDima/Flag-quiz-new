@@ -51,16 +51,20 @@ public class GameScreen extends ActionBarActivity {
 
 		if (savedInstanceState == null) {
 			quizer = new Quizer(this);
-			quizer.resetQuiz();
+			newGame();
 		}
 	}
 
 	public void onClickAnyButton(View v) {
 		submitGuess((Button) v);
 	}
+	private void newGame(){
+		quizer.resetQuiz();
+		loadNextFlag();		
+	}
 
 	private void loadNextFlag() {
-		loadNextFlag();
+		quizer.loadNextFlag();
 		flagImageView.setImageDrawable(quizer.getFlagDrawable());
 		answerTextView.setText("");
 		questionNumberTextView.setText(getResources().getString(
@@ -89,7 +93,7 @@ public class GameScreen extends ActionBarActivity {
 		builder.setPositiveButton(R.string.reset_quiz,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						quizer.resetQuiz();
+						newGame();
 					}
 				});
 		AlertDialog resetDialog = builder.create();
@@ -144,15 +148,15 @@ public class GameScreen extends ActionBarActivity {
 		switch (id) {
 		case R.id.five_questions_item:
 			quizer.setQuestionsCount(5);
-			quizer.resetQuiz();
+			newGame();
 			break;
 		case R.id.ten_questions_item:
 			quizer.setQuestionsCount(10);
-			quizer.resetQuiz();
+			newGame();
 			break;
 		case R.id.fifteen_questions_item:
 			quizer.setQuestionsCount(15);
-			quizer.resetQuiz();
+			newGame();
 			break;
 
 		}

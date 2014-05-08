@@ -54,6 +54,7 @@ public class Quizer {
 		try {
 			input = assets.open("Europe/" + currentFlagName + ".png");
 			flagDrawable = Drawable.createFromStream(input, currentFlagName);
+			Log.e("TAG", "createFromStream");
 		} catch (IOException e) {
 			Log.e("TAG", "Error loading" + currentFlagName, e);
 		}
