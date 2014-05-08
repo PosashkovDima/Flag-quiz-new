@@ -32,14 +32,12 @@ public class GameScreen extends ActionBarActivity {
 	private Random random;
 	private TextView answerTextView;
 	private TextView questionNumberTextView;
-	private int totalAnswers = 1;
-	private int correctAnswers;
+	private int numberOfCurrentQuestion = 1;
+	private int correctAnswersCount;
 	private Handler handler;
 	private Animation shakeAnimation;
-	private int numberOfQuestions = 10;
-	private final int FIVE_QUESTIONS = Menu.FIRST;
-	private final int TEN_QUESTIONS = Menu.FIRST + 1;
-	private final int FIFTEEN_QUESTIONS = Menu.FIRST + 2;
+	private int questionsCount = 5;
+	private static final int SHOW_ANSWER_DELAY = 500;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +49,14 @@ public class GameScreen extends ActionBarActivity {
 		handler = new Handler();
 		flagNamesList = new ArrayList<String>();
 
-		flagImageView = (ImageView) findViewById(R.id.flagImageView);
-		answerTextView = (TextView) findViewById(R.id.answerTextView);
-		questionNumberTextView = (TextView) findViewById(R.id.questionNumberTextView);
+		flagImageView = (ImageView) findViewById(R.id.flag_image_view);
+		answerTextView = (TextView) findViewById(R.id.answer_text_view);
+		questionNumberTextView = (TextView) findViewById(R.id.question_number_text_view);
 
-		buttonArray[0] = (Button) findViewById(R.id.button1);
-		buttonArray[1] = (Button) findViewById(R.id.button2);
-		buttonArray[2] = (Button) findViewById(R.id.button3);
-		buttonArray[3] = (Button) findViewById(R.id.button4);
+		buttonArray[0] = (Button) findViewById(R.id.button_up_left);
+		buttonArray[1] = (Button) findViewById(R.id.button_up_right);
+		buttonArray[2] = (Button) findViewById(R.id.button_down_left);
+		buttonArray[3] = (Button) findViewById(R.id.button_down_right);
 
 		shakeAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.incorrect_shake);
@@ -75,8 +73,8 @@ public class GameScreen extends ActionBarActivity {
 
 	private void resetQuiz() {
 		flagNamesList.clear();
-		totalAnswers = 1;
-		correctAnswers = 0;
+		numberOfCurrentQuestion = 1;
+		correctAnswersCount = 0;
 		AssetManager assets = getAssets();
 		try {
 			String[] counties = assets.list("Europe");
@@ -100,11 +98,9 @@ public class GameScreen extends ActionBarActivity {
 		questionNumberTextView.setText(getResources().getString(
 				R.string.question)
 				+ ' '
-				+ (totalAnswers)
+				+ (numberOfCurrentQuestion)
 				+ ' '
-				+ getResources().getString(R.string.of)
-				+ ' '
-				+ numberOfQuestions);
+				+ getResources().getString(R.string.of) + ' ' + questionsCount);
 		currentFlagName = flagNamesList.remove(0);
 		correctAnswer = currentFlagName;
 
@@ -124,12 +120,35 @@ public class GameScreen extends ActionBarActivity {
 		}
 	}
 
+	private void showEndAlert() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setTitle(R.string.reset_quiz);
+		double a = correctAnswersCount * 1.0;
+		double b = questionsCount * 1.0;
+		double result = a / b;
+		builder.setMessage(String.format("%.02f",result * 100) + "%");
+
+		builder.setCancelable(false);
+		builder.setPositiveButton(R.string.reset_quiz,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						resetQuiz();
+					}
+				});
+		AlertDialog resetDialog = builder.create();
+		resetDialog.show();
+	}
+
+	private boolean isEnd() {
+		return (numberOfCurrentQuestion == questionsCount + 1);
+	}
+
 	private void submitGuess(Button guessButton) {
 		String guess = guessButton.getText().toString();
-
-		++totalAnswers;
+		++numberOfCurrentQuestion;
 		if (guess.equals(correctAnswer)) {
-			++correctAnswers;
+			++correctAnswersCount;
 			answerTextView.setText(correctAnswer + "!");
 			answerTextView.setTextColor(getResources().getColor(
 					R.color.correct_answer));
@@ -137,9 +156,13 @@ public class GameScreen extends ActionBarActivity {
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					loadNextFlag();
+					if (!isEnd()) {
+						loadNextFlag();
+					} else {
+						showEndAlert();
+					}
 				}
-			}, 500);
+			}, SHOW_ANSWER_DELAY);
 
 		} else {
 			flagImageView.startAnimation(shakeAnimation);
@@ -149,38 +172,19 @@ public class GameScreen extends ActionBarActivity {
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					loadNextFlag();
+					if (!isEnd()) {
+						loadNextFlag();
+					} else {
+						showEndAlert();
+					}
 				}
-			}, 500);
+			}, SHOW_ANSWER_DELAY);
 		}
-		if (totalAnswers == numberOfQuestions) {// it work
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-			builder.setTitle(R.string.reset_quiz);
-
-			builder.setMessage(String.format("%d %s, %.02f%% %s",
-					totalAnswers - 1, getResources()
-							.getString(R.string.guesses),
-					(1000 / (double) correctAnswers), "congratulations!"));
-
-			builder.setCancelable(false);
-			builder.setPositiveButton(R.string.reset_quiz,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							resetQuiz();
-						}
-					});
-			AlertDialog resetDialog = builder.create();
-			resetDialog.show();
-		}
-
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		getMenuInflater().inflate(R.menu.game_screen, menu);
-
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
 
@@ -188,24 +192,20 @@ public class GameScreen extends ActionBarActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		switch (id) {
-		case R.id.fiveQuestionsItem:
-			numberOfQuestions = 5;
+		case R.id.five_questions_item:
+			questionsCount = 5;
 			resetQuiz();
 			break;
-		case R.id.tenQuestionsItem:
-			numberOfQuestions = 10;
+		case R.id.ten_questions_item:
+			questionsCount = 10;
 			resetQuiz();
 			break;
-		case R.id.fifteenQuestionsItem:
-			numberOfQuestions = 15;
+		case R.id.fifteen_questions_item:
+			questionsCount = 15;
 			resetQuiz();
 			break;
 
 		}
-		if (id == R.id.fiveQuestionsItem) {
-			return true;
-		}
-
 		return super.onOptionsItemSelected(item);
 	}
 }
