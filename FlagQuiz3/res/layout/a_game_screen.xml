@@ -10,6 +10,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/guess_country"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/questionNumberTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="@string/question"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/text_size"  />
+
         <ImageView
             android:id="@+id/flagImageView"
             android:layout_width="@dimen/flag_width"
@@ -19,7 +38,7 @@
             android:layout_marginTop="100dp" />
 
         <TableLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/flagImageView"
             android:layout_centerHorizontal="true"
@@ -34,17 +53,17 @@
 
                 <Button
                     android:id="@+id/button1"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onClickAnyButton" />
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
 
                 <Button
                     android:id="@+id/button2"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onClickAnyButton" />
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
             </TableRow>
 
             <TableRow
@@ -54,17 +73,17 @@
 
                 <Button
                     android:id="@+id/button3"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onClickAnyButton" />
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
 
                 <Button
                     android:id="@+id/button4"
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onClickAnyButton" />
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
             </TableRow>
         </TableLayout>
     </RelativeLayout>
