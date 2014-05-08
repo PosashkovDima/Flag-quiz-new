@@ -49,7 +49,7 @@ public class Quizer {
 		InputStream input = null;
 		String currentFlagName;
 		currentFlagName = flagNamesList.remove(0);
-		if (newCurrentFlagName != null) {//beda
+		if (newCurrentFlagName != null) {
 			currentFlagName = newCurrentFlagName;
 			newCurrentFlagName = null;
 		}

@@ -30,6 +30,7 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_NUMBER_OF_CURRENT_QUESTION = "number_of_current_question";
 	private static final String EXTRA_CORRECT_QUESTIONS_COUNT = "current_questions_count";
 	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
+	private static final String EXTRA_BUTTONS_TEXT = "buttons_text";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +67,12 @@ public class GameScreen extends ActionBarActivity {
 				quizer.getNumberOfCurrentQuestion());
 		outState.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
 				quizer.getCorrectAnswersCount());
-
 		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
-
+		String[] buttonsText = new String[4];
+		for (int i = 0; i < 4; i++) {
+			buttonsText[i] =  (String) buttonArray[i].getText();
+		}
+		outState.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
 	}
 
 	@Override
@@ -86,6 +90,11 @@ public class GameScreen extends ActionBarActivity {
 		quizer.setNewCurrentFlagName(savedInstanceState
 				.getString(EXTRA_CURRENT_FLAG_NAME));
 		loadNextFlag();
+		String[] buttonsText = new String[4];
+		buttonsText = savedInstanceState.getStringArray(EXTRA_BUTTONS_TEXT);
+		for (int i = 0; i < 4; i++) {
+			buttonArray[i].setText(buttonsText[i]);
+		}
 	}
 
 	private void submitGuess(Button guessButton) {
