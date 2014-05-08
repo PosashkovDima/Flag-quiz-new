@@ -100,6 +100,10 @@ public class Quizer {
 		this.questionsCount = questionsCount;
 	}
 
+	public int getQuestionsCount() {
+		return questionsCount;
+	}
+
 	public boolean isEnd() {
 		return (numberOfCurrentQuestion == questionsCount + 1);
 	}

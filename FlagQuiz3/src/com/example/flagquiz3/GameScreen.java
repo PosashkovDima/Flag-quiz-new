@@ -58,9 +58,10 @@ public class GameScreen extends ActionBarActivity {
 	public void onClickAnyButton(View v) {
 		submitGuess((Button) v);
 	}
-	private void newGame(){
+
+	private void newGame() {
 		quizer.resetQuiz();
-		loadNextFlag();		
+		loadNextFlag();
 	}
 
 	private void loadNextFlag() {
@@ -69,10 +70,12 @@ public class GameScreen extends ActionBarActivity {
 		answerTextView.setText("");
 		questionNumberTextView.setText(getResources().getString(
 				R.string.question)
-				+ " "
+				+ ' '
 				+ (quizer.getNumberOfCurrentQuestion())
-				+ " "
-				+ getResources().getString(R.string.of) + " 10");
+				+ ' '
+				+ getResources().getString(R.string.of)
+				+ ' '
+				+ quizer.getQuestionsCount());
 		int randomIndex;
 		Random random = new Random();
 		randomIndex = random.nextInt(4);
