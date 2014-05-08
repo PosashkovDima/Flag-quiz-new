@@ -26,6 +26,10 @@ public class GameScreen extends ActionBarActivity {
 	private Quizer quizer;
 	private Handler handler;
 	private static final int SHOW_ANSWER_DELAY = 500;
+	private static final String EXTRA_QUESTIONS_COUNT = "questions_count";
+	private static final String EXTRA_NUMBER_OF_CURRENT_QUESTION = "number_of_current_question";
+	private static final String EXTRA_CORRECT_QUESTIONS_COUNT = "current_questions_count";
+	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +53,74 @@ public class GameScreen extends ActionBarActivity {
 				R.anim.incorrect_shake);
 		shakeAnimation.setRepeatCount(3);
 
-		if (savedInstanceState == null) {
-			quizer = new Quizer(this);
-			newGame();
+		quizer = new Quizer(this);
+		newFlag();
+
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
+		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
+				quizer.getNumberOfCurrentQuestion());
+		outState.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
+				quizer.getCorrectAnswersCount());
+
+		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
+
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+
+		quizer.setQuestionsCount(savedInstanceState
+				.getInt(EXTRA_QUESTIONS_COUNT));
+
+		quizer.setCorrectAnswersCount(savedInstanceState
+				.getInt(EXTRA_CORRECT_QUESTIONS_COUNT));
+
+		quizer.setNumberOfCurrentQuestion(savedInstanceState
+				.getInt(EXTRA_NUMBER_OF_CURRENT_QUESTION));
+		quizer.setNewCurrentFlagName(savedInstanceState
+				.getString(EXTRA_CURRENT_FLAG_NAME));
+		loadNextFlag();
+	}
+
+	private void submitGuess(Button guessButton) {
+		String guess = guessButton.getText().toString();
+		quizer.increaseNumberOfCurrentQuestion();// 1
+		if (quizer.isAnswerCorrect(guess)) {// 2
+			quizer.increaseCorrectAnswersCount();// 3
+			answerTextView.setText(quizer.getCorrectAnswer() + "!");// 4
+			answerTextView.setTextColor(getResources().getColor(
+					R.color.correct_answer));
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (!quizer.isEnd()) {
+						loadNextFlag();
+					} else {
+						showEndAlert();
+					}
+				}
+			}, SHOW_ANSWER_DELAY);
+		} else {
+			flagImageView.startAnimation(shakeAnimation);
+			answerTextView.setText(R.string.incorrect_answer);
+			answerTextView.setTextColor(getResources().getColor(
+					R.color.incorrect_answer));
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if (!quizer.isEnd()) {
+						loadNextFlag();
+					} else {
+						showEndAlert();
+					}
+				}
+			}, SHOW_ANSWER_DELAY);
 		}
 	}
 
@@ -59,7 +128,7 @@ public class GameScreen extends ActionBarActivity {
 		submitGuess((Button) v);
 	}
 
-	private void newGame() {
+	private void newFlag() {
 		quizer.resetQuiz();
 		loadNextFlag();
 	}
@@ -96,47 +165,11 @@ public class GameScreen extends ActionBarActivity {
 		builder.setPositiveButton(R.string.reset_quiz,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						newGame();
+						newFlag();
 					}
 				});
 		AlertDialog resetDialog = builder.create();
 		resetDialog.show();
-	}
-
-	private void submitGuess(Button guessButton) {
-		String guess = guessButton.getText().toString();
-		quizer.increaseNumberOfCurrentQuestion();
-		if (quizer.isAnswerCorrect(guess)) {
-			quizer.increaseCorrectAnswersCount();
-			answerTextView.setText(quizer.getCorrectAnswer() + "!");
-			answerTextView.setTextColor(getResources().getColor(
-					R.color.correct_answer));
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					if (!quizer.isEnd()) {
-						loadNextFlag();
-					} else {
-						showEndAlert();
-					}
-				}
-			}, SHOW_ANSWER_DELAY);
-		} else {
-			flagImageView.startAnimation(shakeAnimation);
-			answerTextView.setText(R.string.incorrect_answer);
-			answerTextView.setTextColor(getResources().getColor(
-					R.color.incorrect_answer));
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					if (!quizer.isEnd()) {
-						loadNextFlag();
-					} else {
-						showEndAlert();
-					}
-				}
-			}, SHOW_ANSWER_DELAY);
-		}
 	}
 
 	@Override
@@ -151,15 +184,15 @@ public class GameScreen extends ActionBarActivity {
 		switch (id) {
 		case R.id.five_questions_item:
 			quizer.setQuestionsCount(5);
-			newGame();
+			newFlag();
 			break;
 		case R.id.ten_questions_item:
 			quizer.setQuestionsCount(10);
-			newGame();
+			newFlag();
 			break;
 		case R.id.fifteen_questions_item:
 			quizer.setQuestionsCount(15);
-			newGame();
+			newFlag();
 			break;
 
 		}

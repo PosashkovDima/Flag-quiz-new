@@ -20,12 +20,11 @@ public class Quizer {
 	private int questionsCount = 10;
 	private Drawable flagDrawable;
 	private Context context;
+	private String newCurrentFlagName;
 
 	public Quizer(Context context) {
 		this.context = context;
 		flagNamesList = new ArrayList<String>();
-
-		// resetQuiz();
 	}
 
 	public void resetQuiz() {
@@ -50,6 +49,10 @@ public class Quizer {
 		InputStream input = null;
 		String currentFlagName;
 		currentFlagName = flagNamesList.remove(0);
+		if (newCurrentFlagName != null) {//beda
+			currentFlagName = newCurrentFlagName;
+			newCurrentFlagName = null;
+		}
 		correctAnswer = currentFlagName;
 		try {
 			input = assets.open("Europe/" + currentFlagName + ".png");
@@ -60,16 +63,8 @@ public class Quizer {
 		}
 	}
 
-	public Drawable getFlagDrawable() {
-		return flagDrawable;
-	}
-
-	public String getFlagName(int i) {
-		return flagNamesList.get(i);
-	}
-
-	public int getNumberOfCurrentQuestion() {
-		return numberOfCurrentQuestion;
+	public void setNewCurrentFlagName(String newCurrentFlagName) {
+		this.newCurrentFlagName = newCurrentFlagName;
 	}
 
 	public boolean isAnswerCorrect(String answer) {
@@ -92,16 +87,44 @@ public class Quizer {
 		return correctAnswer;
 	}
 
+	public void setCorrectAnswer(String correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
+
 	public double getResult() {
 		return correctAnswersCount * 1.0 / questionsCount * 1.0;
 	}
 
-	public void setQuestionsCount(int questionsCount) {
-		this.questionsCount = questionsCount;
+	public Drawable getFlagDrawable() {
+		return flagDrawable;
+	}
+
+	public int getCorrectAnswersCount() {
+		return correctAnswersCount;
+	}
+
+	public void setCorrectAnswersCount(int correctAnswersCount) {
+		this.correctAnswersCount = correctAnswersCount;
+	}
+
+	public String getFlagName(int i) {
+		return flagNamesList.get(i);
+	}
+
+	public int getNumberOfCurrentQuestion() {
+		return numberOfCurrentQuestion;
+	}
+
+	public void setNumberOfCurrentQuestion(int numberOfCurrentQuestion) {
+		this.numberOfCurrentQuestion = numberOfCurrentQuestion;
 	}
 
 	public int getQuestionsCount() {
 		return questionsCount;
+	}
+
+	public void setQuestionsCount(int questionsCount) {
+		this.questionsCount = questionsCount;
 	}
 
 	public boolean isEnd() {

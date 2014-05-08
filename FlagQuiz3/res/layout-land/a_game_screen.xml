@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/guess_country"
+            android:textSize="@dimen/title_size" />
+
+        <TextView
+            android:id="@+id/question_number_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@id/title_text_view"
+            android:text="@string/question"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/text_size" />
+
+        <ImageView
+            android:id="@+id/flag_image_view"
+            android:layout_width="@dimen/flag_width"
+            android:layout_height="@dimen/flag_height"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp" />
+
+        <TableLayout
+            android:id="@+id/table_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/flag_image_view" >
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/button_up_left"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
+
+                <Button
+                    android:id="@+id/button_up_right"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/button_down_left"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
+
+                <Button
+                    android:id="@+id/button_down_right"
+                    android:layout_width="@dimen/button_width"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickAnyButton"
+                    android:textSize="@dimen/text_size" />
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/answer_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/table_layout"
+            android:layout_below="@+id/flag_image_view"
+            android:text="@string/correct_answer" />
+    </RelativeLayout>
+
+</RelativeLayout>
