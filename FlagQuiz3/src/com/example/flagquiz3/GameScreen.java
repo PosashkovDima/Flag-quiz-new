@@ -3,12 +3,16 @@ package com.example.flagquiz3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -22,14 +26,17 @@ import android.widget.TextView;
 
 public class GameScreen extends ActionBarActivity {
 	private List<String> flagNamesList;
-	private List<String> quizCountriesList;
 	private String correctAnswer;
 	private ImageView flagImageView;
 	private Button[] buttonArray;
 	private Random random;
 	private TextView answerTextView;
 	private TextView questionNumberTextView;
-	private int answersLost;
+	private int totalAnswers = 1;
+	private int correctAnswers;
+	private Handler handler;
+	private Animation shakeAnimation;
+	private int numberOfQuestions = 10;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +45,8 @@ public class GameScreen extends ActionBarActivity {
 
 		buttonArray = new Button[4];
 		random = new Random();
+		handler = new Handler();
 		flagNamesList = new ArrayList<String>();
-		quizCountriesList = new ArrayList<String>();
 
 		flagImageView = (ImageView) findViewById(R.id.flagImageView);
 		answerTextView = (TextView) findViewById(R.id.answerTextView);
@@ -50,48 +57,35 @@ public class GameScreen extends ActionBarActivity {
 		buttonArray[2] = (Button) findViewById(R.id.button3);
 		buttonArray[3] = (Button) findViewById(R.id.button4);
 
-		Animation shakeAnimation = AnimationUtils.loadAnimation(this,
+		shakeAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.incorrect_shake);
 		shakeAnimation.setRepeatCount(3);
 
 		if (savedInstanceState == null) {
-
-			makeQuestion(10);
+			resetQuiz();
 		}
 	}
 
 	public void onClickAnyButton(View v) {
-		makeQuestion(10);
+		submitGuess((Button) v);
 	}
 
-	private void makeQuestion(int numberOfQuestions) {
-
-		questionNumberTextView.setText(getResources().getString(
-				R.string.question)
-				+ ' '
-				+ (++answersLost)
-				+ ' '
-				+ getResources().getString(R.string.of)
-				+ ' '
-				+ numberOfQuestions);
-		addQuestions(numberOfQuestions);
-		loadNextFlag();
-	}
-
-	private void addQuestions(int numberOfQuestions) {
+	private void resetQuiz() {
 		flagNamesList.clear();
-		quizCountriesList.clear();
-		int randomIndex;
-		String fileName;
-		loadFlagNames();
-		int numberOfFlags = flagNamesList.size();
-		for (int i = 0; i < numberOfQuestions; i++) {
-			randomIndex = random.nextInt(numberOfFlags);
-			fileName = flagNamesList.get(randomIndex);
-			if (!quizCountriesList.contains(fileName)) {
-				quizCountriesList.add(fileName);
+		totalAnswers = 1;
+		correctAnswers = 0;
+		AssetManager assets = getAssets();
+		try {
+			String[] counties = assets.list("Europe");
+			for (String country : counties) {
+				flagNamesList.add(country.replace(".png", ""));
 			}
+		} catch (IOException e) {
+
+			Log.e("TAG", "Error loading image file names");
 		}
+		Collections.shuffle(flagNamesList);
+		loadNextFlag();
 	}
 
 	private void loadNextFlag() {
@@ -100,8 +94,15 @@ public class GameScreen extends ActionBarActivity {
 		String currentFlagName;
 		AssetManager assets = getAssets();
 		answerTextView.setText("");
-
-		currentFlagName = quizCountriesList.remove(0);
+		questionNumberTextView.setText(getResources().getString(
+				R.string.question)
+				+ ' '
+				+ (totalAnswers)
+				+ ' '
+				+ getResources().getString(R.string.of)
+				+ ' '
+				+ numberOfQuestions);
+		currentFlagName = flagNamesList.remove(0);
 		correctAnswer = currentFlagName;
 
 		try {
@@ -115,23 +116,61 @@ public class GameScreen extends ActionBarActivity {
 		buttonArray[randomIndex].setText(correctAnswer);
 		for (int i = 0; i < 4; i++) {
 			if (i != randomIndex) {
-				buttonArray[i].setText(quizCountriesList.get(i));
+				buttonArray[i].setText(flagNamesList.get(i));
 			}
 		}
 	}
 
-	private List<String> loadFlagNames() {
-		AssetManager assets = getAssets();
-		try {
-			String[] counties = assets.list("Europe");
-			for (String country : counties) {
-				flagNamesList.add(country.replace(".png", ""));
-			}
-		} catch (IOException e) {
+	private void submitGuess(Button guessButton) {
+		String guess = guessButton.getText().toString();
 
-			Log.e("TAG", "Error loading image file names");
+		++totalAnswers;
+		if (guess.equals(correctAnswer)) {
+			++correctAnswers;
+			answerTextView.setText(correctAnswer + "!");
+			answerTextView.setTextColor(getResources().getColor(
+					R.color.correct_answer));
+
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					loadNextFlag();
+				}
+			}, 500);
+
+		} else {
+			flagImageView.startAnimation(shakeAnimation);
+			answerTextView.setText(R.string.incorrect_answer);
+			answerTextView.setTextColor(getResources().getColor(
+					R.color.incorrect_answer));
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					loadNextFlag();
+				}
+			}, 500);
 		}
-		return flagNamesList;
+		if (totalAnswers == numberOfQuestions) {// it work
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+			builder.setTitle(R.string.reset_quiz);
+
+			builder.setMessage(String.format("%d %s, %.02f%% %s",
+					totalAnswers - 1, getResources()
+							.getString(R.string.guesses),
+					(1000 / (double) correctAnswers), "congratulations!"));
+
+			builder.setCancelable(false);
+			builder.setPositiveButton(R.string.reset_quiz,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							resetQuiz();
+						}
+					});
+			AlertDialog resetDialog = builder.create();
+			resetDialog.show();
+		}
+
 	}
 
 	@Override
