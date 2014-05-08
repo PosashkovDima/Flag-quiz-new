@@ -11,7 +11,7 @@
         android:layout_height="match_parent" >
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -20,7 +20,7 @@
             android:textSize="@dimen/title_size" />
 
         <TextView
-            android:id="@+id/questionNumberTextView"
+            android:id="@+id/question_number_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -30,7 +30,7 @@
             android:textSize="@dimen/text_size" />
 
         <ImageView
-            android:id="@+id/flagImageView"
+            android:id="@+id/flag_image_view"
             android:layout_width="@dimen/flag_width"
             android:layout_height="@dimen/flag_height"
             android:layout_alignParentTop="true"
@@ -38,49 +38,47 @@
             android:layout_marginTop="100dp" />
 
         <TableLayout
-            android:id="@+id/tableLayout1"
+            android:id="@+id/table_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/flagImageView"
+            android:layout_below="@+id/flag_image_view"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp" >
 
-            <TableRow
-                android:id="@+id/tableRow1"
+            <TableRow 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <Button
-                    android:id="@+id/button1"
+                    android:id="@+id/button_up_left"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
                     android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/button_up_right"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
                     android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
             </TableRow>
 
-            <TableRow
-                android:id="@+id/tableRow2"
+            <TableRow 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/button_down_left"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
                     android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/button_down_right"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
                     android:onClick="onClickAnyButton"
@@ -89,10 +87,10 @@
         </TableLayout>
 
         <TextView
-            android:id="@+id/answerTextView"
+            android:id="@+id/answer_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tableLayout1"
+            android:layout_below="@id/table_layout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:text="@string/correct_answer" />
