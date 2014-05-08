@@ -37,6 +37,9 @@ public class GameScreen extends ActionBarActivity {
 	private Handler handler;
 	private Animation shakeAnimation;
 	private int numberOfQuestions = 10;
+	private final int FIVE_QUESTIONS = Menu.FIRST;
+	private final int TEN_QUESTIONS = Menu.FIRST + 1;
+	private final int FIFTEEN_QUESTIONS = Menu.FIRST + 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -177,13 +180,29 @@ public class GameScreen extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		getMenuInflater().inflate(R.menu.game_screen, menu);
+
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		switch (id) {
+		case R.id.fiveQuestionsItem:
+			numberOfQuestions = 5;
+			resetQuiz();
+			break;
+		case R.id.tenQuestionsItem:
+			numberOfQuestions = 10;
+			resetQuiz();
+			break;
+		case R.id.fifteenQuestionsItem:
+			numberOfQuestions = 15;
+			resetQuiz();
+			break;
+
+		}
+		if (id == R.id.fiveQuestionsItem) {
 			return true;
 		}
 

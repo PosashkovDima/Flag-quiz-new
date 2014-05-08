@@ -11,8 +11,11 @@
     <string name="incorrect_answer">Incorrect!</string>
     <string name="of">of</string>
     <string name="ok">OK</string>
-    <string name="question">Question</string> 
+    <string name="question">Question</string>
     <string name="reset_quiz">Reset Quiz</string>
+    <string name="five_questions">5 Questions</string>
+    <string name="ten_questions">10 Questions</string>
+    <string name="fifteen_questions">15 Questions</string>
 
     <string-array name="guessesList">
         <item>5</item>

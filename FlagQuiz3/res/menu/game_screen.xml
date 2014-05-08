@@ -4,9 +4,19 @@
     tools:context="com.example.flagquiz3.GameScreen" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/fiveQuestionsItem"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/five_questions"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/tenQuestionsItem"
+        android:orderInCategory="100"
+        android:title="@string/ten_questions"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/fifteenQuestionsItem"
+        android:orderInCategory="100"
+        android:title="@string/fifteen_questions"
         app:showAsAction="never"/>
 
 </menu>
