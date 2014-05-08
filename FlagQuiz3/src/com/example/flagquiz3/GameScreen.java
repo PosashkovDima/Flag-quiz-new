@@ -55,45 +55,35 @@ public class GameScreen extends ActionBarActivity {
 		shakeAnimation.setRepeatCount(3);
 
 		if (savedInstanceState == null) {
-			makeQuestions(10);
+
+			makeQuestion(10);
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		getMenuInflater().inflate(R.menu.game_screen, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 	public void onClickAnyButton(View v) {
-		makeQuestions(10);
+		makeQuestion(10);
 	}
 
-	private void makeQuestions(int numberOfQuestions) {
-		flagNamesList.clear();
-		quizCountriesList.clear();
+	private void makeQuestion(int numberOfQuestions) {
+
 		questionNumberTextView.setText(getResources().getString(
 				R.string.question)
 				+ ' '
-				+ (answersLost++ + 1)
+				+ (++answersLost)
 				+ ' '
 				+ getResources().getString(R.string.of)
 				+ ' '
 				+ numberOfQuestions);
-		loadFlagNames();
+		addQuestions(numberOfQuestions);
+		loadNextFlag();
+	}
+
+	private void addQuestions(int numberOfQuestions) {
+		flagNamesList.clear();
+		quizCountriesList.clear();
 		int randomIndex;
 		String fileName;
+		loadFlagNames();
 		int numberOfFlags = flagNamesList.size();
 		for (int i = 0; i < numberOfQuestions; i++) {
 			randomIndex = random.nextInt(numberOfFlags);
@@ -102,7 +92,6 @@ public class GameScreen extends ActionBarActivity {
 				quizCountriesList.add(fileName);
 			}
 		}
-		loadNextFlag();
 	}
 
 	private void loadNextFlag() {
@@ -145,4 +134,20 @@ public class GameScreen extends ActionBarActivity {
 		return flagNamesList;
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		getMenuInflater().inflate(R.menu.game_screen, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
 }
