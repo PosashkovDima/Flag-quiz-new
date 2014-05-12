@@ -15,24 +15,25 @@ public class SplashActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.a_splash_screen);
-
-		splashTread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					synchronized (this) {
-						wait(SPLASH_SCREEN_DELAY);
+		if (savedInstanceState == null) {
+			splashTread = new Thread() {
+				@Override
+				public void run() {
+					try {
+						synchronized (this) {
+							wait(SPLASH_SCREEN_DELAY);
+						}
+					} catch (InterruptedException e) {
+					} finally {
+						finish();
+						Intent intent = new Intent(SplashActivity.this,
+								GameScreen.class);
+						startActivity(intent);
 					}
-				} catch (InterruptedException e) {
-				} finally {
-					finish();
-					Intent intent = new Intent(SplashActivity.this,
-							GameScreen.class);
-					startActivity(intent);
 				}
-			}
-		};
-		splashTread.start();
+			};
+			splashTread.start();
+		}
 	}
 
 	@Override
