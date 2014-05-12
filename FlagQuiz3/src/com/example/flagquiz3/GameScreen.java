@@ -25,12 +25,18 @@ public class GameScreen extends ActionBarActivity {
 	private Button[] buttonArray;
 	private Quizer quizer;
 	private Handler handler;
+
 	private static final int SHOW_ANSWER_DELAY = 500;
 	private static final String EXTRA_QUESTIONS_COUNT = "questions_count";
 	private static final String EXTRA_NUMBER_OF_CURRENT_QUESTION = "number_of_current_question";
 	private static final String EXTRA_CORRECT_QUESTIONS_COUNT = "current_questions_count";
 	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
 	private static final String EXTRA_BUTTONS_TEXT = "buttons_text";
+	private static final String EXTRA_GAME_OVER = "game_over";
+	private static final String EXTRA_RESULT = "result";
+
+	private double result;
+	private boolean isGameOver = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +61,16 @@ public class GameScreen extends ActionBarActivity {
 		shakeAnimation.setRepeatCount(3);
 
 		quizer = new Quizer(this);
-		newFlag();
-
+		newGame();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		outState.putBoolean(EXTRA_GAME_OVER, isGameOver);
+		if (isGameOver) {
+			outState.putDouble(EXTRA_RESULT, quizer.getResult());
+		}
 		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
 		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
 				quizer.getNumberOfCurrentQuestion());
@@ -70,7 +79,7 @@ public class GameScreen extends ActionBarActivity {
 		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
 		String[] buttonsText = new String[4];
 		for (int i = 0; i < 4; i++) {
-			buttonsText[i] =  (String) buttonArray[i].getText();
+			buttonsText[i] = (String) buttonArray[i].getText();
 		}
 		outState.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
 	}
@@ -78,7 +87,7 @@ public class GameScreen extends ActionBarActivity {
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-
+		isGameOver = savedInstanceState.getBoolean(EXTRA_GAME_OVER);
 		quizer.setQuestionsCount(savedInstanceState
 				.getInt(EXTRA_QUESTIONS_COUNT));
 
@@ -89,28 +98,44 @@ public class GameScreen extends ActionBarActivity {
 				.getInt(EXTRA_NUMBER_OF_CURRENT_QUESTION));
 		quizer.setNewCurrentFlagName(savedInstanceState
 				.getString(EXTRA_CURRENT_FLAG_NAME));
-		loadNextFlag();
+
+		newQuiz();
 		String[] buttonsText = new String[4];
 		buttonsText = savedInstanceState.getStringArray(EXTRA_BUTTONS_TEXT);
 		for (int i = 0; i < 4; i++) {
 			buttonArray[i].setText(buttonsText[i]);
 		}
+		if (isGameOver) {
+			result = savedInstanceState.getDouble(EXTRA_RESULT);
+			showEndAlert();
+		}
 	}
 
+	public void onClickAnyButton(View v) {
+		submitGuess((Button) v);
+		setButtonsEnable(false);
+	}
+
+	/**
+	 * This method is called when user click on button.
+	 * 
+	 * @param guessButton
+	 */
 	private void submitGuess(Button guessButton) {
 		String guess = guessButton.getText().toString();
-		quizer.increaseNumberOfCurrentQuestion();// 1
-		if (quizer.isAnswerCorrect(guess)) {// 2
-			quizer.increaseCorrectAnswersCount();// 3
-			answerTextView.setText(quizer.getCorrectAnswer() + "!");// 4
+		quizer.increaseNumberOfCurrentQuestion();
+		if (quizer.isAnswerCorrect(guess)) {
+			quizer.increaseCorrectAnswersCount();
+			answerTextView.setText(quizer.getCorrectAnswer() + "!");
 			answerTextView.setTextColor(getResources().getColor(
 					R.color.correct_answer));
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if (!quizer.isEnd()) {
-						loadNextFlag();
+					if (!quizer.isGameOver()) {
+						newQuiz();
 					} else {
+						result = quizer.getResult();
 						showEndAlert();
 					}
 				}
@@ -123,9 +148,10 @@ public class GameScreen extends ActionBarActivity {
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if (!quizer.isEnd()) {
-						loadNextFlag();
+					if (!quizer.isGameOver()) {
+						newQuiz();
 					} else {
+						result = quizer.getResult();
 						showEndAlert();
 					}
 				}
@@ -133,15 +159,25 @@ public class GameScreen extends ActionBarActivity {
 		}
 	}
 
-	public void onClickAnyButton(View v) {
-		submitGuess((Button) v);
-	}
-
-	private void newFlag() {
+	/**
+	 * Load new game.
+	 */
+	private void newGame() {
 		quizer.resetQuiz();
-		loadNextFlag();
+		newQuiz();
 	}
 
+	/**
+	 * Load next quiz.
+	 */
+	private void newQuiz() {
+		loadNextFlag();
+		loadNextAnswers();
+	}
+
+	/**
+	 * Load and set next flag image.
+	 */
 	private void loadNextFlag() {
 		quizer.loadNextFlag();
 		flagImageView.setImageDrawable(quizer.getFlagDrawable());
@@ -154,6 +190,13 @@ public class GameScreen extends ActionBarActivity {
 				+ getResources().getString(R.string.of)
 				+ ' '
 				+ quizer.getQuestionsCount());
+	}
+
+	/**
+	 * Load and set correct answer to random button and random text to other
+	 * buttons, next enable buttons.
+	 */
+	private void loadNextAnswers() {
 		int randomIndex;
 		Random random = new Random();
 		randomIndex = random.nextInt(4);
@@ -163,22 +206,37 @@ public class GameScreen extends ActionBarActivity {
 				buttonArray[i].setText(quizer.getFlagName(i));
 			}
 		}
+		setButtonsEnable(true);
 	}
 
+	/**
+	 * Enable or disable buttons.
+	 * 
+	 * @param enabled
+	 */
+	private void setButtonsEnable(boolean enabled) {
+		for (int i = 0; i < 4; i++) {
+			buttonArray[i].setEnabled(enabled);
+		}
+	}
+
+	/**
+	 * Show AlertDialog when game finished.
+	 */
 	private void showEndAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.reset_quiz);
-		builder.setMessage(String.format("%.02f", quizer.getResult() * 100)
-				+ "%");
+		builder.setMessage(String.format("%.02f", result * 100) + "%");
 		builder.setCancelable(false);
 		builder.setPositiveButton(R.string.reset_quiz,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						newFlag();
+						newGame();
 					}
 				});
 		AlertDialog resetDialog = builder.create();
 		resetDialog.show();
+		isGameOver = true;
 	}
 
 	@Override
@@ -193,15 +251,15 @@ public class GameScreen extends ActionBarActivity {
 		switch (id) {
 		case R.id.five_questions_item:
 			quizer.setQuestionsCount(5);
-			newFlag();
+			newGame();
 			break;
 		case R.id.ten_questions_item:
 			quizer.setQuestionsCount(10);
-			newFlag();
+			newGame();
 			break;
 		case R.id.fifteen_questions_item:
 			quizer.setQuestionsCount(15);
-			newFlag();
+			newGame();
 			break;
 
 		}

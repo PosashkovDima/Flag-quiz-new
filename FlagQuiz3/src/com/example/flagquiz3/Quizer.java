@@ -20,7 +20,7 @@ public class Quizer {
 	private int questionsCount = 10;
 	private Drawable flagDrawable;
 	private Context context;
-	private String newCurrentFlagName;
+	private String newCurrentFlagName; 
 
 	public Quizer(Context context) {
 		this.context = context;
@@ -127,7 +127,7 @@ public class Quizer {
 		this.questionsCount = questionsCount;
 	}
 
-	public boolean isEnd() {
+	public boolean isGameOver() {
 		return (numberOfCurrentQuestion == questionsCount + 1);
 	}
 
