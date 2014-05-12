@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -37,6 +38,13 @@ public class GameScreen extends ActionBarActivity {
 
 	private double result;
 	private boolean isGameOver = false;
+	private OnClickListener guessButtonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			submitGuess((Button) v);
+			setButtonsEnable(false);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,11 @@ public class GameScreen extends ActionBarActivity {
 		buttonArray[1] = (Button) findViewById(R.id.button_up_right);
 		buttonArray[2] = (Button) findViewById(R.id.button_down_left);
 		buttonArray[3] = (Button) findViewById(R.id.button_down_right);
+
+		buttonArray[0].setOnClickListener(guessButtonListener);
+		buttonArray[1].setOnClickListener(guessButtonListener);
+		buttonArray[2].setOnClickListener(guessButtonListener);
+		buttonArray[3].setOnClickListener(guessButtonListener);
 
 		shakeAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.incorrect_shake);
@@ -111,11 +124,6 @@ public class GameScreen extends ActionBarActivity {
 		}
 	}
 
-	public void onClickAnyButton(View v) {
-		submitGuess((Button) v);
-		setButtonsEnable(false);
-	}
-
 	/**
 	 * This method is called when user click on button.
 	 * 
@@ -164,6 +172,7 @@ public class GameScreen extends ActionBarActivity {
 	 */
 	private void newGame() {
 		quizer.resetQuiz();
+		isGameOver=false;
 		newQuiz();
 	}
 

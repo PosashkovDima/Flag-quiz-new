@@ -41,8 +41,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/flag_image_view" >
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/flag_image_view" >
 
             <TableRow
                 android:layout_width="wrap_content"
@@ -52,14 +52,12 @@
                     android:id="@+id/button_up_left"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
 
                 <Button
                     android:id="@+id/button_up_right"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
             </TableRow>
 
@@ -71,14 +69,12 @@
                     android:id="@+id/button_down_left"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
 
                 <Button
                     android:id="@+id/button_down_right"
                     android:layout_width="@dimen/button_width"
                     android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
                     android:textSize="@dimen/text_size" />
             </TableRow>
         </TableLayout>
@@ -88,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/table_layout"
-            android:layout_below="@+id/flag_image_view"
+            android:layout_below="@id/flag_image_view"
             android:text="@string/correct_answer" />
     </RelativeLayout>
 

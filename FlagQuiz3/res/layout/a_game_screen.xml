@@ -1,100 +1,85 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.flagquiz3.GameScreen"
-    tools:ignore="MergeRootFrame"
-    android:background="@drawable/world_map" >
+    android:background="@drawable/world_map"
+    android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="@string/guess_country"
+        android:textSize="@dimen/title_size" />
 
-        <TextView
-            android:id="@+id/title_text_view"
+    <TextView
+        android:id="@+id/question_number_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="@string/question"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/text_size" />
+
+    <ImageView
+        android:id="@+id/flag_image_view"
+        android:layout_width="@dimen/flag_width"
+        android:layout_height="@dimen/flag_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp" />
+
+    <TableLayout
+        android:id="@+id/table_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp" >
+
+        <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/guess_country"
-            android:textSize="@dimen/title_size" />
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/question_number_text_view"
+            <Button
+                android:id="@+id/button_up_left"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size" />
+
+            <Button
+                android:id="@+id/button_up_right"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:text="@string/question"
-            android:textColor="@color/text_color"
-            android:textSize="@dimen/text_size" />
+            android:layout_height="wrap_content" >
 
-        <ImageView
-            android:id="@+id/flag_image_view"
-            android:layout_width="@dimen/flag_width"
-            android:layout_height="@dimen/flag_height"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp" />
+            <Button
+                android:id="@+id/button_down_left"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size" />
 
-        <TableLayout
-            android:id="@+id/table_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/flag_image_view"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp" >
+            <Button
+                android:id="@+id/button_down_right"
+                android:layout_width="@dimen/button_width"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size" />
+        </TableRow>
+    </TableLayout>
 
-            <TableRow 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+    <TextView
+        android:id="@+id/answer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:text="@string/correct_answer" />
 
-                <Button
-                    android:id="@+id/button_up_left"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
-                    android:textSize="@dimen/text_size" />
-
-                <Button
-                    android:id="@+id/button_up_right"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
-                    android:textSize="@dimen/text_size" />
-            </TableRow>
-
-            <TableRow 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <Button
-                    android:id="@+id/button_down_left"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
-                    android:textSize="@dimen/text_size" />
-
-                <Button
-                    android:id="@+id/button_down_right"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClickAnyButton"
-                    android:textSize="@dimen/text_size" />
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-            android:id="@+id/answer_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/table_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/correct_answer" />
-    </RelativeLayout>
-
-</FrameLayout>
+</LinearLayout>
