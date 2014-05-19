@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,6 +75,7 @@ public class GameScreen extends ActionBarActivity {
 		shakeAnimation.setRepeatCount(3);
 
 		quizer = new Quizer(this);
+
 		newGame();
 	}
 
@@ -150,7 +152,7 @@ public class GameScreen extends ActionBarActivity {
 			}, SHOW_ANSWER_DELAY);
 		} else {
 			flagImageView.startAnimation(shakeAnimation);
-			answerTextView.setText(R.string.incorrect_answer);
+			answerTextView.setText(quizer.getCorrectAnswer() + "!");
 			answerTextView.setTextColor(getResources().getColor(
 					R.color.incorrect_answer));
 			handler.postDelayed(new Runnable() {
@@ -172,7 +174,7 @@ public class GameScreen extends ActionBarActivity {
 	 */
 	private void newGame() {
 		quizer.resetQuiz();
-		isGameOver=false;
+		isGameOver = false;
 		newQuiz();
 	}
 
@@ -235,7 +237,14 @@ public class GameScreen extends ActionBarActivity {
 	private void showEndAlert() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.reset_quiz);
-		builder.setMessage(String.format("%.02f", result * 100) + "%");
+		if (quizer.isRecord(result)) {
+			// quizer.insertValue("dima", result * 100);
+			// builder.setMessage(quizer.getChampsArray());
+			builder.setMessage(result + "");
+		} else {
+			builder.setMessage(String.format("%.02f", result * 100)
+					+ "% You must try again!");
+		}
 		builder.setCancelable(false);
 		builder.setPositiveButton(R.string.reset_quiz,
 				new DialogInterface.OnClickListener() {
