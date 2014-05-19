@@ -118,10 +118,13 @@ public class Quizer {
 	 * @return
 	 */
 	public boolean isRecord(double result) {
-		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
-				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
-				+ " DESC LIMIT 10", null);
+		Cursor cursor = sdb.rawQuery(
+				"SELECT " + dbHelper.NAME_COLUMN + ", "
+						+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
+						+ " FROM " + TABLE_NAME + " ORDER BY "
+						+ dbHelper.RESULT_COLUMN, null);
+		// + " ORDER BY " + dbHelper.RESULT_COLUMN
+		// + " DESC LIMIT 10"
 		// Cursor cursor = sdb.query(TABLE_NAME, new String[] {
 		// dbHelper.NAME_COLUMN, dbHelper.RESULT_COLUMN,
 		// dbHelper.DATE_COLUMN }, null, null, null, null,
@@ -136,9 +139,9 @@ public class Quizer {
 					.getColumnIndex(dbHelper.RESULT_COLUMN));
 			Log.e("tag", resultLite + " resultLite");
 			// if (result >= resultLite || cursor.getCount() < 10) {
-//			if (result >= resultLite) {
-//				return true;
-//			}
+			// if (result >= resultLite) {
+			// return true;
+			// }
 		}
 		return true;
 	}
