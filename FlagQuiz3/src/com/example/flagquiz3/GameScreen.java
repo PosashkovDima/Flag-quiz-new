@@ -1,10 +1,11 @@
 package com.example.flagquiz3;
 
-import java.util.List;
 import java.util.Random;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -12,15 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class GameScreen extends ActionBarActivity {
@@ -50,6 +47,33 @@ public class GameScreen extends ActionBarActivity {
 			submitGuess((Button) v);
 			setButtonsEnable(false);
 		}
+	};
+
+	private void saveSharedPreferences() {
+		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPerferences.edit();
+
+		editor.putBoolean(EXTRA_GAME_OVER, isGameOver);
+		if (isGameOver) {
+			editor.putInt(EXTRA_RESULT, quizer.getResult());
+		}
+		editor.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
+		editor.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
+				quizer.getNumberOfCurrentQuestion());
+		editor.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
+				quizer.getCorrectAnswersCount());
+		editor.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
+		String[] buttonsText = new String[4];
+		for (int i = 0; i < 4; i++) {
+			buttonsText[i] = (String) buttonArray[i].getText();
+		}
+		editor.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
+		editor.commit();
+	}
+
+	@Override
+	protected void onDestroy() {
+		saveSharedPreferences();
 	};
 
 	@Override
@@ -89,7 +113,7 @@ public class GameScreen extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(EXTRA_GAME_OVER, isGameOver);
 		if (isGameOver) {
-			outState.putDouble(EXTRA_RESULT, quizer.getResult());
+			outState.putInt(EXTRA_RESULT, quizer.getResult());
 		}
 		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
 		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
