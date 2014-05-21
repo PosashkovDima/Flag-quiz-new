@@ -128,7 +128,7 @@ public class Quizer {
 	 * 
 	 * @return String
 	 */
-	public String getChampionsList() {
+	public String getTopTen() {
 		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
 				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
 				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
