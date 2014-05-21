@@ -1,5 +1,6 @@
 package com.example.flagquiz3;
 
+import java.util.List;
 import java.util.Random;
 
 import android.app.AlertDialog;
@@ -7,15 +8,19 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class GameScreen extends ActionBarActivity {
@@ -37,7 +42,7 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_GAME_OVER = "game_over";
 	private static final String EXTRA_RESULT = "result";
 
-	private double result;
+	private int result;
 	private boolean isGameOver = false;
 	private OnClickListener guessButtonListener = new OnClickListener() {
 		@Override
@@ -121,7 +126,7 @@ public class GameScreen extends ActionBarActivity {
 			buttonArray[i].setText(buttonsText[i]);
 		}
 		if (isGameOver) {
-			result = savedInstanceState.getDouble(EXTRA_RESULT);
+			result = savedInstanceState.getInt(EXTRA_RESULT);
 			showEndAlert();
 		}
 	}
@@ -232,26 +237,55 @@ public class GameScreen extends ActionBarActivity {
 	}
 
 	/**
-	 * Show AlertDialog when game finished.
+	 * Show record table.
 	 */
-	private void showEndAlert() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.reset_quiz);
-		if (quizer.isRecord(result)) {
-			// quizer.insertValue("dima", result * 100);
-			// builder.setMessage(quizer.getChampsArray());
-			builder.setMessage(result + "");
-		} else {
-			builder.setMessage(String.format("%.02f", result * 100)
-					+ "% You must try again!");
-		}
-		builder.setCancelable(false);
+	private void showChampionsDialog() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		String topTen = quizer.getChampionsList();
+		builder.setMessage(topTen);
+
 		builder.setPositiveButton(R.string.reset_quiz,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						newGame();
 					}
 				});
+		builder.setCancelable(false);
+		AlertDialog resetDialog = builder.create();
+		resetDialog.show();
+	}
+
+	/**
+	 * Show AlertDialog when the game is over.
+	 */
+	private void showEndAlert() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		if (quizer.isRecord(result)) {
+			builder.setTitle(R.string.enter_name_request);
+			builder.setMessage("Your score: " + result);
+			final EditText enterNameEdixText = new EditText(this);
+			builder.setView(enterNameEdixText);
+			builder.setPositiveButton(R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							quizer.insertValue(enterNameEdixText.getText()
+									.toString(), result);
+							showChampionsDialog();
+						}
+					});
+		} else {
+			builder.setTitle(R.string.reset_quiz);
+			builder.setMessage("Your result: " + result
+					+ "% You must try again!");
+			builder.setPositiveButton(R.string.reset_quiz,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							newGame();
+						}
+					});
+		}
+		builder.setCancelable(false);
 		AlertDialog resetDialog = builder.create();
 		resetDialog.show();
 		isGameOver = true;

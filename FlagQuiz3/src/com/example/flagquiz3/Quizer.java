@@ -3,10 +3,8 @@ package com.example.flagquiz3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -19,7 +17,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 public class Quizer {
-	private static final String DATABASE_NAME = "database2.db";
+	private static final String DATABASE_NAME = "playersdatabase.db";
 	private static final String TABLE_NAME = "champions";
 	private List<String> flagNamesList;
 	private String correctAnswer;
@@ -40,6 +38,9 @@ public class Quizer {
 		createDatabase();
 	}
 
+	/**
+	 * Reload game.
+	 */
 	public void resetQuiz() {
 		flagNamesList.clear();
 		numberOfCurrentQuestion = 1;
@@ -51,7 +52,6 @@ public class Quizer {
 				flagNamesList.add(country.replace(".png", ""));
 			}
 		} catch (IOException e) {
-
 			Log.e("TAG", "Error loading image file names");
 		}
 		Collections.shuffle(flagNamesList);
@@ -76,18 +76,6 @@ public class Quizer {
 		}
 	}
 
-	public void setNewCurrentFlagName(String newCurrentFlagName) {
-		this.newCurrentFlagName = newCurrentFlagName;
-	}
-
-	public boolean isAnswerCorrect(String answer) {
-		if (answer.equals(correctAnswer)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	/**
 	 * Create champion's database.
 	 */
@@ -102,12 +90,12 @@ public class Quizer {
 	 * @param name
 	 * @param result
 	 */
-	public void insertValue(String name, double result) {
+	public void insertValue(String name, int result) {
 		ContentValues newValues = new ContentValues();
 		newValues.put(dbHelper.NAME_COLUMN, name);
 		newValues.put(dbHelper.RESULT_COLUMN, result);
 		newValues.put(dbHelper.DATE_COLUMN,
-				(String) DateFormat.format("yyyy-MM-dd kk:mm:ss", new Date()));
+				(String) DateFormat.format("dd.MM kk:mm", new Date()));
 		sdb.insert(TABLE_NAME, null, newValues);
 	}
 
@@ -117,62 +105,51 @@ public class Quizer {
 	 * @param result
 	 * @return
 	 */
-	public boolean isRecord(double result) {
-		Cursor cursor = sdb.rawQuery(
-				"SELECT " + dbHelper.NAME_COLUMN + ", "
-						+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
-						+ " FROM " + TABLE_NAME + " ORDER BY "
-						+ dbHelper.RESULT_COLUMN, null);
-		// + " ORDER BY " + dbHelper.RESULT_COLUMN
-		// + " DESC LIMIT 10"
-		// Cursor cursor = sdb.query(TABLE_NAME, new String[] {
-		// dbHelper.NAME_COLUMN, dbHelper.RESULT_COLUMN,
-		// dbHelper.DATE_COLUMN }, null, null, null, null,
-		// dbHelper.RESULT_COLUMN + " DESC", "10");
-		// + " ORDER BY " + dbHelper.RESULT_COLUMN
-		// + " DESC LIMIT 10"
-		double resultLite;
-		for (int i = 0; i < cursor.getCount(); i++) {
-			cursor.moveToPosition(i);
-			Log.e("tag", i + "");
-			resultLite = cursor.getDouble(cursor
-					.getColumnIndex(dbHelper.RESULT_COLUMN));
-			Log.e("tag", resultLite + " resultLite");
-			// if (result >= resultLite || cursor.getCount() < 10) {
-			// if (result >= resultLite) {
-			// return true;
-			// }
-		}
-		return true;
-	}
-
-	public String getChampsArray() {
-
+	public boolean isRecord(int result) {
 		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
 				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
 				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
-		cursor.moveToFirst();
-		String[] champsArray = new String[cursor.getCount()];
-		String a = "";
-		int i = 0;
-		// while (!cursor.moveToNext()) {
-		// champsArray[i++] = cursor.getString(cursor
-		// .getColumnIndex(dbHelper.NAME_COLUMN))
-		// + cursor.getString(cursor
-		// .getColumnIndex(dbHelper.RESULT_COLUMN))
-		// + cursor.getString(cursor
-		// .getColumnIndex(dbHelper.DATE_COLUMN));
-		// }
-
-		while (!cursor.moveToNext()) {
-			a = cursor.getString(cursor.getColumnIndex(dbHelper.NAME_COLUMN))
-					+ cursor.getString(cursor
-							.getColumnIndex(dbHelper.RESULT_COLUMN))
-					+ cursor.getString(cursor
-							.getColumnIndex(dbHelper.DATE_COLUMN)) + "/n";
+		int resultOfCurrentPosition = 0;
+		for (int i = 0; i < 10; i++) {
+			cursor.moveToPosition(i);
+			resultOfCurrentPosition = cursor.getInt(cursor
+					.getColumnIndex(dbHelper.RESULT_COLUMN));
+			if (result >= resultOfCurrentPosition) {
+				return true;
+			}
 		}
-		return a;
+		return false;
+	}
+
+	/**
+	 * Make request to sqlite and get champions then put all in string and
+	 * return.
+	 * 
+	 * @return String
+	 */
+	public String getChampionsList() {
+		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
+				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
+				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
+				+ " DESC LIMIT 10", null);
+
+		StringBuilder str = new StringBuilder("Score |  name   |  date");
+		str.append(System.getProperty("line.separator"));
+		for (int i = 0; i < 10; i++) {
+			cursor.moveToPosition(i);
+			str.append((cursor.getInt(cursor
+					.getColumnIndex(dbHelper.RESULT_COLUMN))));
+			str.append("      ");
+			str.append(cursor.getString(cursor
+					.getColumnIndex(dbHelper.NAME_COLUMN)));
+			str.append(' ');
+			str.append(cursor.getString(cursor
+					.getColumnIndex(dbHelper.DATE_COLUMN)));
+			str.append(' ');
+			str.append(System.getProperty("line.separator"));
+		}
+		return str.toString();
 	}
 
 	public void increaseCorrectAnswersCount() {
@@ -191,8 +168,8 @@ public class Quizer {
 		this.correctAnswer = correctAnswer;
 	}
 
-	public double getResult() {
-		return correctAnswersCount * 1.0 / questionsCount * 1.0;
+	public int getResult() {
+		return correctAnswersCount;
 	}
 
 	public Drawable getFlagDrawable() {
@@ -231,4 +208,15 @@ public class Quizer {
 		return (numberOfCurrentQuestion == questionsCount + 1);
 	}
 
+	public void setNewCurrentFlagName(String newCurrentFlagName) {
+		this.newCurrentFlagName = newCurrentFlagName;
+	}
+
+	public boolean isAnswerCorrect(String answer) {
+		if (answer.equals(correctAnswer)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
