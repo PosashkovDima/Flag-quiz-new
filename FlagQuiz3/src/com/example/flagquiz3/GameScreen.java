@@ -1,5 +1,6 @@
 package com.example.flagquiz3;
 
+import java.io.IOException;
 import java.util.Random;
 
 import android.app.AlertDialog;
@@ -52,32 +53,11 @@ public class GameScreen extends ActionBarActivity {
 		}
 	};
 
-	private void saveSharedPreferences() {
-		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPerferences.edit();
-
-		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
-		editor.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
-		editor.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
-				quizer.getNumberOfCurrentQuestion());
-		editor.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
-				quizer.getCorrectAnswersCount());
-		editor.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
-		editor.putString(EXTRA_BUTTON_1_TEXT, buttonArray[0].getText()
-				.toString());
-		editor.putString(EXTRA_BUTTON_2_TEXT, buttonArray[1].getText()
-				.toString());
-		editor.putString(EXTRA_BUTTON_3_TEXT, buttonArray[2].getText()
-				.toString());
-		editor.putString(EXTRA_BUTTON_4_TEXT, buttonArray[3].getText()
-				.toString());
-		editor.commit();
+	@Override
+	protected void onStop() {
+		super.onStop();
+		saveSharedPreferences();
 	}
-
-	// @Override
-	// protected void onDestroy() {
-	// saveSharedPreferences();
-	// };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,51 +84,54 @@ public class GameScreen extends ActionBarActivity {
 		shakeAnimation.setRepeatCount(3);
 
 		quizer = new Quizer(this);
-
-		newGame();
+		if (!restoreSharedPreferences()) {
+			newGame();
+		}
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
-		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
-		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
-				quizer.getNumberOfCurrentQuestion());
-		outState.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
-				quizer.getCorrectAnswersCount());
-		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
-		String[] buttonsText = new String[4];
-		for (int i = 0; i < 4; i++) {
-			buttonsText[i] = (String) buttonArray[i].getText();
-		}
-		outState.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
+//		outState.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
+//		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
+//		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
+//				quizer.getNumberOfCurrentQuestion());
+//		outState.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
+//				quizer.getCorrectAnswersCount());
+//		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
+//		String[] buttonsText = new String[4];
+//		for (int i = 0; i < 4; i++) {
+//			buttonsText[i] = (String) buttonArray[i].getText();
+//		}
+//		outState.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
+		saveSharedPreferences();
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		isGameOver = savedInstanceState.getBoolean(EXTRA_IS_GAME_OVER);
-		quizer.setQuestionsCount(savedInstanceState
-				.getInt(EXTRA_QUESTIONS_COUNT));
-
-		quizer.setCorrectAnswersCount(savedInstanceState
-				.getInt(EXTRA_CORRECT_QUESTIONS_COUNT));
-
-		quizer.setNumberOfCurrentQuestion(savedInstanceState
-				.getInt(EXTRA_NUMBER_OF_CURRENT_QUESTION));
-		quizer.setNewCurrentFlagName(savedInstanceState
-				.getString(EXTRA_CURRENT_FLAG_NAME));
-
-		newQuiz();
-		String[] buttonsText = new String[4];
-		buttonsText = savedInstanceState.getStringArray(EXTRA_BUTTONS_TEXT);
-		for (int i = 0; i < 4; i++) {
-			buttonArray[i].setText(buttonsText[i]);
-		}
-		if (isGameOver) {
-			showEndAlert();
-		}
+//		isGameOver = savedInstanceState.getBoolean(EXTRA_IS_GAME_OVER);
+//		quizer.setQuestionsCount(savedInstanceState
+//				.getInt(EXTRA_QUESTIONS_COUNT));
+//
+//		quizer.setCorrectAnswersCount(savedInstanceState
+//				.getInt(EXTRA_CORRECT_QUESTIONS_COUNT));
+//
+//		quizer.setNumberOfCurrentQuestion(savedInstanceState
+//				.getInt(EXTRA_NUMBER_OF_CURRENT_QUESTION));
+//		quizer.setNewCurrentFlagName(savedInstanceState
+//				.getString(EXTRA_CURRENT_FLAG_NAME));
+//
+//		newQuiz();
+//		String[] buttonsText = new String[4];
+//		buttonsText = savedInstanceState.getStringArray(EXTRA_BUTTONS_TEXT);
+//		for (int i = 0; i < 4; i++) {
+//			buttonArray[i].setText(buttonsText[i]);
+//		}
+//		if (isGameOver) {
+//			showEndAlert();
+//		}
+		restoreSharedPreferences();
 	}
 
 	/**
@@ -335,5 +318,76 @@ public class GameScreen extends ActionBarActivity {
 
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void saveSharedPreferences() {
+		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPerferences.edit();
+
+		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
+		editor.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
+		editor.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
+				quizer.getNumberOfCurrentQuestion());
+		editor.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
+				quizer.getCorrectAnswersCount());
+		editor.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
+		editor.putString(EXTRA_BUTTON_1_TEXT, buttonArray[0].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_2_TEXT, buttonArray[1].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_3_TEXT, buttonArray[2].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_4_TEXT, buttonArray[3].getText()
+				.toString());
+		editor.commit();
+	}
+
+	private boolean restoreSharedPreferences() {
+		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
+
+		String currentFlagName = sharedPerferences.getString(
+				EXTRA_CURRENT_FLAG_NAME, null);
+		String firstButtonText = sharedPerferences.getString(
+				EXTRA_BUTTON_1_TEXT, null);
+		String secondButtonText = sharedPerferences.getString(
+				EXTRA_BUTTON_2_TEXT, null);
+		String thirdButtonText = sharedPerferences.getString(
+				EXTRA_BUTTON_3_TEXT, null);
+		String fourthButtonText = sharedPerferences.getString(
+				EXTRA_BUTTON_4_TEXT, null);
+		int questionsCount = sharedPerferences
+				.getInt(EXTRA_QUESTIONS_COUNT, -1);
+		int correctAnswersCount = sharedPerferences.getInt(
+				EXTRA_CORRECT_QUESTIONS_COUNT, -1);
+		int numberOfCurrentQuestion = sharedPerferences.getInt(
+				EXTRA_NUMBER_OF_CURRENT_QUESTION, -1);
+
+		if (currentFlagName == null || firstButtonText == null
+				|| secondButtonText == null || thirdButtonText == null
+				|| fourthButtonText == null || questionsCount == -1
+				|| correctAnswersCount == -1 || numberOfCurrentQuestion == -1) {
+			return false;
+		} else {
+			quizer.resetQuiz();
+			isGameOver = sharedPerferences
+					.getBoolean(EXTRA_IS_GAME_OVER, false);
+
+			quizer.setQuestionsCount(questionsCount);
+			quizer.setCorrectAnswersCount(correctAnswersCount);
+			quizer.setNumberOfCurrentQuestion(numberOfCurrentQuestion);
+			quizer.setNewCurrentFlagName(currentFlagName);
+
+			newQuiz();
+			buttonArray[0].setText(firstButtonText);
+			buttonArray[1].setText(secondButtonText);
+			buttonArray[2].setText(thirdButtonText);
+			buttonArray[3].setText(fourthButtonText);
+
+			if (isGameOver) {
+				showEndAlert();
+			}
+			return true;
+		}
+
 	}
 }
