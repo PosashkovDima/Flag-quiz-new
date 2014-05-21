@@ -69,8 +69,7 @@ public class Quizer {
 		correctAnswer = currentFlagName;
 		try {
 			input = assets.open("Europe/" + currentFlagName + ".png");
-			flagDrawable = Drawable.createFromStream(input, currentFlagName);
-			Log.e("TAG", "createFromStream");
+			flagDrawable = Drawable.createFromStream(input, currentFlagName); 
 		} catch (IOException e) {
 			Log.e("TAG", "Error loading" + currentFlagName, e);
 		}
@@ -168,9 +167,7 @@ public class Quizer {
 		this.correctAnswer = correctAnswer;
 	}
 
-	public int getResult() {
-		return correctAnswersCount;
-	}
+	 
 
 	public Drawable getFlagDrawable() {
 		return flagDrawable;

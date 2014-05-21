@@ -55,10 +55,7 @@ public class GameScreen extends ActionBarActivity {
 		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPerferences.edit();
 
-		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
-		if (isGameOver) {
-			editor.putInt(EXTRA_RESULT, quizer.getResult());
-		}
+		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver); 
 		editor.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
 		editor.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
 				quizer.getNumberOfCurrentQuestion());
@@ -172,8 +169,7 @@ public class GameScreen extends ActionBarActivity {
 				public void run() {
 					if (!quizer.isGameOver()) {
 						newQuiz();
-					} else {
-						result = quizer.getResult();
+					} else { 
 						isRecord = quizer.isRecord(result);
 						showEndAlert();
 					}
@@ -190,7 +186,6 @@ public class GameScreen extends ActionBarActivity {
 					if (!quizer.isGameOver()) {
 						newQuiz();
 					} else {
-						result = quizer.getResult();
 						isRecord = quizer.isRecord(result);
 						showEndAlert();
 					}
@@ -286,6 +281,7 @@ public class GameScreen extends ActionBarActivity {
 	 */
 	private void showEndAlert() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		result = quizer.getCorrectAnswersCount();
 		if (isRecord) {
 			builder.setTitle(R.string.enter_name_request);
 			builder.setMessage("Your score: " + result);
