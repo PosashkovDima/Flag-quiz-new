@@ -1,6 +1,5 @@
 package com.example.flagquiz3;
 
-import java.io.IOException;
 import java.util.Random;
 
 import android.app.AlertDialog;
@@ -36,7 +35,6 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_NUMBER_OF_CURRENT_QUESTION = "number_of_current_question";
 	private static final String EXTRA_CORRECT_QUESTIONS_COUNT = "current_questions_count";
 	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
-	private static final String EXTRA_BUTTONS_TEXT = "buttons_text";
 	private static final String EXTRA_IS_GAME_OVER = "game_over";
 	private static final String EXTRA_BUTTON_1_TEXT = "button_1_text";
 	private static final String EXTRA_BUTTON_2_TEXT = "button_2_text";
@@ -87,51 +85,6 @@ public class GameScreen extends ActionBarActivity {
 		if (!restoreSharedPreferences()) {
 			newGame();
 		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-//		outState.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
-//		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
-//		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
-//				quizer.getNumberOfCurrentQuestion());
-//		outState.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
-//				quizer.getCorrectAnswersCount());
-//		outState.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
-//		String[] buttonsText = new String[4];
-//		for (int i = 0; i < 4; i++) {
-//			buttonsText[i] = (String) buttonArray[i].getText();
-//		}
-//		outState.putStringArray(EXTRA_BUTTONS_TEXT, buttonsText);
-		saveSharedPreferences();
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-//		isGameOver = savedInstanceState.getBoolean(EXTRA_IS_GAME_OVER);
-//		quizer.setQuestionsCount(savedInstanceState
-//				.getInt(EXTRA_QUESTIONS_COUNT));
-//
-//		quizer.setCorrectAnswersCount(savedInstanceState
-//				.getInt(EXTRA_CORRECT_QUESTIONS_COUNT));
-//
-//		quizer.setNumberOfCurrentQuestion(savedInstanceState
-//				.getInt(EXTRA_NUMBER_OF_CURRENT_QUESTION));
-//		quizer.setNewCurrentFlagName(savedInstanceState
-//				.getString(EXTRA_CURRENT_FLAG_NAME));
-//
-//		newQuiz();
-//		String[] buttonsText = new String[4];
-//		buttonsText = savedInstanceState.getStringArray(EXTRA_BUTTONS_TEXT);
-//		for (int i = 0; i < 4; i++) {
-//			buttonArray[i].setText(buttonsText[i]);
-//		}
-//		if (isGameOver) {
-//			showEndAlert();
-//		}
-		restoreSharedPreferences();
 	}
 
 	/**
@@ -388,6 +341,17 @@ public class GameScreen extends ActionBarActivity {
 			}
 			return true;
 		}
+	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		saveSharedPreferences();
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		restoreSharedPreferences();
 	}
 }
