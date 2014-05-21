@@ -37,12 +37,9 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
 	private static final String EXTRA_BUTTONS_TEXT = "buttons_text";
 	private static final String EXTRA_IS_GAME_OVER = "game_over";
-	private static final String EXTRA_RESULT = "result";
-	private static final String EXTRA_IS_RECORD = "is_record";
 
 	private int result;
 	private boolean isGameOver = false;
-	private boolean isRecord = false;
 	private OnClickListener guessButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -55,7 +52,7 @@ public class GameScreen extends ActionBarActivity {
 		SharedPreferences sharedPerferences = getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPerferences.edit();
 
-		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver); 
+		editor.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
 		editor.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
 		editor.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
 				quizer.getNumberOfCurrentQuestion());
@@ -110,7 +107,6 @@ public class GameScreen extends ActionBarActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean(EXTRA_IS_GAME_OVER, isGameOver);
-		outState.putBoolean(EXTRA_IS_RECORD, isRecord);
 		outState.putInt(EXTRA_QUESTIONS_COUNT, quizer.getQuestionsCount());
 		outState.putInt(EXTRA_NUMBER_OF_CURRENT_QUESTION,
 				quizer.getNumberOfCurrentQuestion());
@@ -128,7 +124,6 @@ public class GameScreen extends ActionBarActivity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		isGameOver = savedInstanceState.getBoolean(EXTRA_IS_GAME_OVER);
-		isRecord = savedInstanceState.getBoolean(EXTRA_IS_RECORD);
 		quizer.setQuestionsCount(savedInstanceState
 				.getInt(EXTRA_QUESTIONS_COUNT));
 
@@ -169,8 +164,7 @@ public class GameScreen extends ActionBarActivity {
 				public void run() {
 					if (!quizer.isGameOver()) {
 						newQuiz();
-					} else { 
-						isRecord = quizer.isRecord(result);
+					} else {
 						showEndAlert();
 					}
 				}
@@ -186,7 +180,6 @@ public class GameScreen extends ActionBarActivity {
 					if (!quizer.isGameOver()) {
 						newQuiz();
 					} else {
-						isRecord = quizer.isRecord(result);
 						showEndAlert();
 					}
 				}
@@ -282,7 +275,8 @@ public class GameScreen extends ActionBarActivity {
 	private void showEndAlert() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		result = quizer.getCorrectAnswersCount();
-		if (isRecord) {
+
+		if (quizer.isRecord(result)) {
 			builder.setTitle(R.string.enter_name_request);
 			builder.setMessage("Your score: " + result);
 			final EditText enterNameEdixText = new EditText(this);
@@ -297,8 +291,7 @@ public class GameScreen extends ActionBarActivity {
 					});
 		} else {
 			builder.setTitle(R.string.reset_quiz);
-			builder.setMessage("Your score: " + result
-					+ " You must try again!");
+			builder.setMessage("Your score: " + result + " You must try again!");
 			builder.setPositiveButton(R.string.reset_quiz,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
