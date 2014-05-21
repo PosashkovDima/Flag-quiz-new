@@ -37,6 +37,10 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_CURRENT_FLAG_NAME = "current_flag_name";
 	private static final String EXTRA_BUTTONS_TEXT = "buttons_text";
 	private static final String EXTRA_IS_GAME_OVER = "game_over";
+	private static final String EXTRA_BUTTON_1_TEXT = "button_1_text";
+	private static final String EXTRA_BUTTON_2_TEXT = "button_2_text";
+	private static final String EXTRA_BUTTON_3_TEXT = "button_3_text";
+	private static final String EXTRA_BUTTON_4_TEXT = "button_4_text";
 
 	private int result;
 	private boolean isGameOver = false;
@@ -59,10 +63,14 @@ public class GameScreen extends ActionBarActivity {
 		editor.putInt(EXTRA_CORRECT_QUESTIONS_COUNT,
 				quizer.getCorrectAnswersCount());
 		editor.putString(EXTRA_CURRENT_FLAG_NAME, quizer.getCorrectAnswer());
-		String[] buttonsText = new String[4];
-		for (int i = 0; i < 4; i++) {
-			buttonsText[i] = (String) buttonArray[i].getText();
-		}
+		editor.putString(EXTRA_BUTTON_1_TEXT, buttonArray[0].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_2_TEXT, buttonArray[1].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_3_TEXT, buttonArray[2].getText()
+				.toString());
+		editor.putString(EXTRA_BUTTON_4_TEXT, buttonArray[3].getText()
+				.toString());
 		editor.commit();
 	}
 
@@ -88,12 +96,9 @@ public class GameScreen extends ActionBarActivity {
 		buttonArray[1] = (Button) findViewById(R.id.button_up_right);
 		buttonArray[2] = (Button) findViewById(R.id.button_down_left);
 		buttonArray[3] = (Button) findViewById(R.id.button_down_right);
-
-		buttonArray[0].setOnClickListener(guessButtonListener);
-		buttonArray[1].setOnClickListener(guessButtonListener);
-		buttonArray[2].setOnClickListener(guessButtonListener);
-		buttonArray[3].setOnClickListener(guessButtonListener);
-
+		for (Button buttonPointer : buttonArray) {
+			buttonPointer.setOnClickListener(guessButtonListener);
+		}
 		shakeAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.incorrect_shake);
 		shakeAnimation.setRepeatCount(3);
