@@ -28,7 +28,7 @@ public class Quizer {
 	private Drawable flagDrawable;
 	private Context context;
 	private String newCurrentFlagName;
-	private ChampionsDatabase dbHelper;
+	private ChampionsDatabaseHelper dbHelper;
 	private SQLiteDatabase sdb;
 
 	public Quizer(Context context) {
@@ -79,7 +79,7 @@ public class Quizer {
 	 * Create champion's database.
 	 */
 	private void createDatabase() {
-		dbHelper = new ChampionsDatabase(this.context, DATABASE_NAME, null, 1);
+		dbHelper = new ChampionsDatabaseHelper(this.context, DATABASE_NAME, null, 1);
 		sdb = dbHelper.getWritableDatabase();
 	}
 
@@ -91,9 +91,9 @@ public class Quizer {
 	 */
 	public void insertValue(String name, int result) {
 		ContentValues newValues = new ContentValues();
-		newValues.put(ChampionsDatabase.NAME_COLUMN, name);
-		newValues.put(ChampionsDatabase.RESULT_COLUMN, result);
-		newValues.put(ChampionsDatabase.DATE_COLUMN,
+		newValues.put(ChampionsDatabaseHelper.NAME_COLUMN, name);
+		newValues.put(ChampionsDatabaseHelper.RESULT_COLUMN, result);
+		newValues.put(ChampionsDatabaseHelper.DATE_COLUMN,
 				(String) DateFormat.format("dd.MM kk:mm", new Date()));
 		sdb.insert(TABLE_NAME, null, newValues);
 	}
@@ -105,15 +105,15 @@ public class Quizer {
 	 * @return
 	 */
 	public boolean isRecord(int result) {
-		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabase.NAME_COLUMN + ", "
-				+ ChampionsDatabase.RESULT_COLUMN + ", " + ChampionsDatabase.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabase.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabaseHelper.NAME_COLUMN + ", "
+				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", " + ChampionsDatabaseHelper.DATE_COLUMN
+				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 		int resultOfCurrentPosition = 0;
 		for (int i = 0; i < 10; i++) {
 			cursor.moveToPosition(i);
 			resultOfCurrentPosition = cursor.getInt(cursor
-					.getColumnIndex(ChampionsDatabase.RESULT_COLUMN));
+					.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN));
 			if (result >= resultOfCurrentPosition) {
 				return true;
 			}
@@ -128,9 +128,9 @@ public class Quizer {
 	 * @return String
 	 */
 	public String getTopTen() {
-		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabase.NAME_COLUMN + ", "
-				+ ChampionsDatabase.RESULT_COLUMN + ", " + ChampionsDatabase.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabase.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabaseHelper.NAME_COLUMN + ", "
+				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", " + ChampionsDatabaseHelper.DATE_COLUMN
+				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 
 		StringBuilder str = new StringBuilder("Score |  name   |  date");
@@ -138,13 +138,13 @@ public class Quizer {
 		for (int i = 0; i < 10; i++) {
 			cursor.moveToPosition(i);
 			str.append((cursor.getInt(cursor
-					.getColumnIndex(ChampionsDatabase.RESULT_COLUMN))));
+					.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN))));
 			str.append("      ");
 			str.append(cursor.getString(cursor
-					.getColumnIndex(ChampionsDatabase.NAME_COLUMN)));
+					.getColumnIndex(ChampionsDatabaseHelper.NAME_COLUMN)));
 			str.append(' ');
 			str.append(cursor.getString(cursor
-					.getColumnIndex(ChampionsDatabase.DATE_COLUMN)));
+					.getColumnIndex(ChampionsDatabaseHelper.DATE_COLUMN)));
 			str.append(' ');
 			str.append(System.getProperty("line.separator"));
 		}

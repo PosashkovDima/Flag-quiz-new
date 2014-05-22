@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-public class ChampionsDatabase extends SQLiteOpenHelper implements BaseColumns {
+public class ChampionsDatabaseHelper extends SQLiteOpenHelper implements BaseColumns {
 
 	public static final String RESULT_COLUMN = "result";
 	public static final String DATE_COLUMN = "date";
@@ -18,7 +18,7 @@ public class ChampionsDatabase extends SQLiteOpenHelper implements BaseColumns {
 			+ " integer not null, " + NAME_COLUMN + " text not null, "
 			+ DATE_COLUMN + " text not null);";
 
-	public ChampionsDatabase(Context context, String name,
+	public ChampionsDatabaseHelper(Context context, String name,
 			CursorFactory factory, int version) {
 		super(context, name, factory, version);
 
