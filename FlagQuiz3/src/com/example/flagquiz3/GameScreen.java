@@ -52,24 +52,14 @@ public class GameScreen extends ActionBarActivity {
 	};
 
 	@Override
-	protected void onStop() {
-		super.onStop();
-		saveSharedPreferences();
-	}
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.a_game_screen);
-
-		buttonArray = new Button[4];
-
-		handler = new Handler();
-
 		flagImageView = (ImageView) findViewById(R.id.flag_image_view);
 		answerTextView = (TextView) findViewById(R.id.answer_text_view);
 		questionNumberTextView = (TextView) findViewById(R.id.question_number_text_view);
 
+		buttonArray = new Button[4];
 		buttonArray[0] = (Button) findViewById(R.id.button_up_left);
 		buttonArray[1] = (Button) findViewById(R.id.button_up_right);
 		buttonArray[2] = (Button) findViewById(R.id.button_down_left);
@@ -77,14 +67,22 @@ public class GameScreen extends ActionBarActivity {
 		for (Button buttonPointer : buttonArray) {
 			buttonPointer.setOnClickListener(guessButtonListener);
 		}
+		handler = new Handler();
+
 		shakeAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.incorrect_shake);
+				R.anim.anim_incorrect_shake);
 		shakeAnimation.setRepeatCount(3);
 
 		quizer = new Quizer(this);
 		if (!restoreSharedPreferences()) {
 			newGame();
 		}
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		saveSharedPreferences();
 	}
 
 	/**
@@ -99,7 +97,8 @@ public class GameScreen extends ActionBarActivity {
 			quizer.increaseCorrectAnswersCount();
 			answerTextView.setText(quizer.getCorrectAnswer() + "!");
 			answerTextView.setTextColor(getResources().getColor(
-					R.color.correct_answer));
+					R.color.correct_answer)); 
+			
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {

@@ -91,9 +91,9 @@ public class Quizer {
 	 */
 	public void insertValue(String name, int result) {
 		ContentValues newValues = new ContentValues();
-		newValues.put(dbHelper.NAME_COLUMN, name);
-		newValues.put(dbHelper.RESULT_COLUMN, result);
-		newValues.put(dbHelper.DATE_COLUMN,
+		newValues.put(ChampionsDatabase.NAME_COLUMN, name);
+		newValues.put(ChampionsDatabase.RESULT_COLUMN, result);
+		newValues.put(ChampionsDatabase.DATE_COLUMN,
 				(String) DateFormat.format("dd.MM kk:mm", new Date()));
 		sdb.insert(TABLE_NAME, null, newValues);
 	}
@@ -105,15 +105,15 @@ public class Quizer {
 	 * @return
 	 */
 	public boolean isRecord(int result) {
-		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
-				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabase.NAME_COLUMN + ", "
+				+ ChampionsDatabase.RESULT_COLUMN + ", " + ChampionsDatabase.DATE_COLUMN
+				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabase.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 		int resultOfCurrentPosition = 0;
 		for (int i = 0; i < 10; i++) {
 			cursor.moveToPosition(i);
 			resultOfCurrentPosition = cursor.getInt(cursor
-					.getColumnIndex(dbHelper.RESULT_COLUMN));
+					.getColumnIndex(ChampionsDatabase.RESULT_COLUMN));
 			if (result >= resultOfCurrentPosition) {
 				return true;
 			}
@@ -128,9 +128,9 @@ public class Quizer {
 	 * @return String
 	 */
 	public String getTopTen() {
-		Cursor cursor = sdb.rawQuery("SELECT " + dbHelper.NAME_COLUMN + ", "
-				+ dbHelper.RESULT_COLUMN + ", " + dbHelper.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + dbHelper.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabase.NAME_COLUMN + ", "
+				+ ChampionsDatabase.RESULT_COLUMN + ", " + ChampionsDatabase.DATE_COLUMN
+				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabase.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 
 		StringBuilder str = new StringBuilder("Score |  name   |  date");
@@ -138,13 +138,13 @@ public class Quizer {
 		for (int i = 0; i < 10; i++) {
 			cursor.moveToPosition(i);
 			str.append((cursor.getInt(cursor
-					.getColumnIndex(dbHelper.RESULT_COLUMN))));
+					.getColumnIndex(ChampionsDatabase.RESULT_COLUMN))));
 			str.append("      ");
 			str.append(cursor.getString(cursor
-					.getColumnIndex(dbHelper.NAME_COLUMN)));
+					.getColumnIndex(ChampionsDatabase.NAME_COLUMN)));
 			str.append(' ');
 			str.append(cursor.getString(cursor
-					.getColumnIndex(dbHelper.DATE_COLUMN)));
+					.getColumnIndex(ChampionsDatabase.DATE_COLUMN)));
 			str.append(' ');
 			str.append(System.getProperty("line.separator"));
 		}
