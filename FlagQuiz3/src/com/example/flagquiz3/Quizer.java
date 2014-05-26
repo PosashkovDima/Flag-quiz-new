@@ -69,7 +69,7 @@ public class Quizer {
 		correctAnswer = currentFlagName;
 		try {
 			input = assets.open("Europe/" + currentFlagName + ".png");
-			flagDrawable = Drawable.createFromStream(input, currentFlagName); 
+			flagDrawable = Drawable.createFromStream(input, currentFlagName);
 		} catch (IOException e) {
 			Log.e("TAG", "Error loading" + currentFlagName, e);
 		}
@@ -79,7 +79,8 @@ public class Quizer {
 	 * Create champion's database.
 	 */
 	private void createDatabase() {
-		dbHelper = new ChampionsDatabaseHelper(this.context, DATABASE_NAME, null, 1);
+		dbHelper = new ChampionsDatabaseHelper(this.context, DATABASE_NAME,
+				null, 1);
 		sdb = dbHelper.getWritableDatabase();
 	}
 
@@ -105,18 +106,23 @@ public class Quizer {
 	 * @return
 	 */
 	public boolean isRecord(int result) {
-		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabaseHelper.NAME_COLUMN + ", "
-				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", " + ChampionsDatabaseHelper.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT "
+				+ ChampionsDatabaseHelper.NAME_COLUMN + ", "
+				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", "
+				+ ChampionsDatabaseHelper.DATE_COLUMN + " FROM " + TABLE_NAME
+				+ " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 		int resultOfCurrentPosition = 0;
-		for (int i = 0; i < 10; i++) {
+		Log.e("asdasd", cursor.moveToFirst() + "");
+
+		for (int i = 0; i < cursor.getCount(); i++) {
 			cursor.moveToPosition(i);
 			resultOfCurrentPosition = cursor.getInt(cursor
 					.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN));
-			if (result >= resultOfCurrentPosition) {
+			if (result >= resultOfCurrentPosition || cursor.getCount() < 10) {
 				return true;
 			}
+
 		}
 		return false;
 	}
@@ -128,14 +134,17 @@ public class Quizer {
 	 * @return String
 	 */
 	public String getTopTen() {
-		Cursor cursor = sdb.rawQuery("SELECT " + ChampionsDatabaseHelper.NAME_COLUMN + ", "
-				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", " + ChampionsDatabaseHelper.DATE_COLUMN
-				+ " FROM " + TABLE_NAME + " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
+		Cursor cursor = sdb.rawQuery("SELECT "
+				+ ChampionsDatabaseHelper.NAME_COLUMN + ", "
+				+ ChampionsDatabaseHelper.RESULT_COLUMN + ", "
+				+ ChampionsDatabaseHelper.DATE_COLUMN + " FROM " + TABLE_NAME
+				+ " ORDER BY " + ChampionsDatabaseHelper.RESULT_COLUMN
 				+ " DESC LIMIT 10", null);
 
 		StringBuilder str = new StringBuilder("Score |  name   |  date");
 		str.append(System.getProperty("line.separator"));
-		for (int i = 0; i < 10; i++) {
+		Log.e("mytag", " " + cursor.getCount());
+		for (int i = 0; i < cursor.getCount(); i++) {
 			cursor.moveToPosition(i);
 			str.append((cursor.getInt(cursor
 					.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN))));
@@ -166,8 +175,6 @@ public class Quizer {
 	public void setCorrectAnswer(String correctAnswer) {
 		this.correctAnswer = correctAnswer;
 	}
-
-	 
 
 	public Drawable getFlagDrawable() {
 		return flagDrawable;

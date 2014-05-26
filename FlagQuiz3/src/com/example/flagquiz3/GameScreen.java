@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 public class GameScreen extends ActionBarActivity {
 
@@ -40,6 +43,7 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_BUTTON_2_TEXT = "button_2_text";
 	private static final String EXTRA_BUTTON_3_TEXT = "button_3_text";
 	private static final String EXTRA_BUTTON_4_TEXT = "button_4_text";
+	private static final String HOCKEYAPP_ID = "03faf778b0d75f9ffe1bbc5d693545d4";
 
 	private int result;
 	private boolean isGameOver = false;
@@ -77,6 +81,22 @@ public class GameScreen extends ActionBarActivity {
 		if (!restoreSharedPreferences()) {
 			newGame();
 		}
+		checkForUpdates();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		checkForCrashes();
+	}
+
+	private void checkForCrashes() {
+		CrashManager.register(this, HOCKEYAPP_ID);
+	}
+
+	private void checkForUpdates() {
+		// Remove this for store builds!
+		UpdateManager.register(this, HOCKEYAPP_ID);
 	}
 
 	@Override
@@ -97,13 +117,13 @@ public class GameScreen extends ActionBarActivity {
 			quizer.increaseCorrectAnswersCount();
 			answerTextView.setText(quizer.getCorrectAnswer() + "!");
 			answerTextView.setTextColor(getResources().getColor(
-					R.color.correct_answer)); 
-			
+					R.color.correct_answer));
+
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
 					if (!quizer.isGameOver()) {
-						newQuiz();
+						newQuiz(); 
 					} else {
 						showEndAlert();
 					}
@@ -217,6 +237,8 @@ public class GameScreen extends ActionBarActivity {
 		result = quizer.getCorrectAnswersCount();
 
 		if (quizer.isRecord(result)) {
+
+			Log.e("mytag", "isRecord=true");
 			builder.setTitle(R.string.enter_name_request);
 			builder.setMessage("Your score: " + result);
 			final EditText enterNameEdixText = new EditText(this);
