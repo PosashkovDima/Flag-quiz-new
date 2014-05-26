@@ -114,15 +114,18 @@ public class Quizer {
 				+ " DESC LIMIT 10", null);
 		int resultOfCurrentPosition = 0;
 		Log.e("asdasd", cursor.moveToFirst() + "");
-
-		for (int i = 0; i < cursor.getCount(); i++) {
-			cursor.moveToPosition(i);
-			resultOfCurrentPosition = cursor.getInt(cursor
-					.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN));
-			if (result >= resultOfCurrentPosition || cursor.getCount() < 10) {
-				return true;
+		if (cursor.getCount() < 10) {
+			return true;
+		} else {
+			for (int i = 0; i < cursor.getCount(); i++) {
+				cursor.moveToPosition(i);
+				resultOfCurrentPosition = cursor.getInt(cursor
+						.getColumnIndex(ChampionsDatabaseHelper.RESULT_COLUMN));
+				Log.e("asdasd", cursor.getCount() + "");
+				if (result >= resultOfCurrentPosition) {
+					return true;
+				}
 			}
-
 		}
 		return false;
 	}
