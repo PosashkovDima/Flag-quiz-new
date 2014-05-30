@@ -2,6 +2,9 @@ package com.example.flagquiz3;
 
 import java.util.Random;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.CrashManagerListener;
+import net.hockeyapp.android.UpdateManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
 
 public class GameScreen extends ActionBarActivity {
 
@@ -43,7 +44,7 @@ public class GameScreen extends ActionBarActivity {
 	private static final String EXTRA_BUTTON_2_TEXT = "button_2_text";
 	private static final String EXTRA_BUTTON_3_TEXT = "button_3_text";
 	private static final String EXTRA_BUTTON_4_TEXT = "button_4_text";
-	private static final String HOCKEYAPP_ID = "03faf778b0d75f9ffe1bbc5d693545d4";
+	private static final String HOCKEYAPP_ID = "6e20068f702131c811755c949d702989";
 
 	private int result;
 	private boolean isGameOver = false;
@@ -81,22 +82,27 @@ public class GameScreen extends ActionBarActivity {
 		if (!restoreSharedPreferences()) {
 			newGame();
 		}
-		checkForUpdates();
+		// checkForUpdates();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		checkForCrashes();
+		checkForUpdates();
 	}
 
 	private void checkForCrashes() {
-		CrashManager.register(this, HOCKEYAPP_ID);
+		CrashManager.register(this, HOCKEYAPP_ID, new CrashManagerListener() {
+			public boolean shouldAutoUploadCrashes() {
+				return true;
+			}
+		});
 	}
 
 	private void checkForUpdates() {
 		// Remove this for store builds!
-		UpdateManager.register(this, HOCKEYAPP_ID);
+//		UpdateManager.register(this, HOCKEYAPP_ID);
 	}
 
 	@Override

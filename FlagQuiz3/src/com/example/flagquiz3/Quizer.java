@@ -33,7 +33,7 @@ public class Quizer {
 
 	public Quizer(Context context) {
 		this.context = context;
-		flagNamesList = new ArrayList<>();
+		flagNamesList = new ArrayList<String>();
 
 		createDatabase();
 	}
